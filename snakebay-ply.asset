@@ -1,0 +1,55 @@
+local earthAsset = asset.require('scene/solarsystem/planets/earth/earth')
+local sunAsset = asset.require('scene/solarsystem/sun/sun')
+
+
+  
+local Cur_Sna = {
+	Identifier = "Cur_Sna",
+	Parent = earthAsset.Earth.Identifier,
+	--Note: Lat/Lon/Scale values comes from alignment with Esri World Imagery 2D layer
+	Transform = {
+		Translation = {
+			Type = "GlobeTranslation",
+			Globe = earthAsset.Earth.Identifier,
+            Latitude = 12.1394,
+            Longitude = -68.9972,
+            Altitude = 6,
+			UseHeightmap = true
+		},
+		Rotation = {
+			Type = "GlobeRotation",
+			Globe = earthAsset.Earth.Identifier,
+            Latitude = 12.1394,
+            Longitude = -68.9972,
+			UseHeightmap = false
+		}
+		
+	},
+	Renderable = {
+		Type = "RenderableModel",
+		GeometryFile = asset.resource("snakebay.ply"),
+		forceRenderInvisible = true,
+		ModelScale = 1,
+		RotationVector = { 0.0, 0, 0.0 },
+		LightSources = { sunAsset.LightSource }
+	},
+	GUI = {
+		Name = "Snake Bay",
+		Path = "/Reefs",
+		Description = [[
+			Snake Bay in Curacao. File from https://sketchfab.com/3d-models/curacao-snakebay-20m-march-2020-b8d3de7653fb43c8a4eb78d7186df0e0 .
+		]],
+	}
+}
+
+
+
+asset.onInitialize(function()
+	openspace.addSceneGraphNode(Cur_Sna)
+end)
+	
+asset.onDeinitialize(function()
+	openspace.removeSceneGraphNode(Cur_Sna)
+end)
+	
+asset.export(Cur_Sna)
