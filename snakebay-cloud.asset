@@ -1,0 +1,87 @@
+local earthAsset = asset.require('scene/solarsystem/planets/earth/earth')
+local sunAsset = asset.require('scene/solarsystem/sun/sun')
+local colormaps = asset.require("util/default_colormaps")
+
+  
+local Cur_Sna = {
+	Identifier = "Cur_Sna",
+	Parent = earthAsset.Earth.Identifier,
+	--Note: Lat/Lon/Scale values comes from alignment with Esri World Imagery 2D layer
+	Transform = {
+		Translation = {
+			Type = "GlobeTranslation",
+			Globe = earthAsset.Earth.Identifier,
+            Latitude = 12.1394,
+            Longitude = -68.9972,
+            Altitude = 6,
+			UseHeightmap = true
+			},
+		Rotation = {
+			Type = "GlobeRotation",
+			Globe = earthAsset.Earth.Identifier,
+            Latitude = 12.1394,
+            Longitude = -68.9972,
+			UseHeightmap = false
+		}
+		
+	},
+	Renderable = {
+    	Type = "RenderablePointCloud",
+    	File = asset.resource("snakebay.csv"),
+    	Coloring = {
+	      ColorMapping = {
+	        File = colormaps.Uniform.Viridis
+	      }
+	    },
+	   SizeSettings = {
+      -- We set the exponent for the scale explicitly, to a value that
+      -- gives the points a suitable size based on their world-space coordinates
+      ScaleExponent = 1,
+      MaxSize = 0.7,
+      EnableMaxSizeControl = true
+    }
+  },
+	GUI = {
+		Name = "Snake Bay",
+		Path = "/Reefs",
+		Description = [[
+			Snake Bay in Curacao.
+		]],
+	}
+}
+
+local Node = {
+  Identifier = "RenderablePointCloud_Example",
+  Renderable = {
+    Type = "RenderablePointCloud",
+    File = asset.resource("dummydata.csv"),
+    Coloring = {
+      FixedColor = { 0.0, 0.5, 0.0 }
+    },
+    Fading = {
+      -- Use the same fade distances, but invert the fading so that the points are
+      -- visible when the camera is closer to the origin that the first value, and
+      -- invisible when further away than the last value
+      FadeInDistances = { 150000000.0, 350000000.0 },
+      -- Invert = true
+    }
+  },
+
+  GUI = {
+    Name = "RenderablePointCloud - Fixed Color and Size",
+    Path = "/Reefs"
+  }
+}
+
+asset.onInitialize(function()
+	openspace.addSceneGraphNode(Cur_Sna)
+	openspace.addSceneGraphNode(Node)
+end)
+	
+asset.onDeinitialize(function()
+	openspace.removeSceneGraphNode(Reference)
+	openspace.removeSceneGraphNode(Node)
+end)
+	
+asset.export(Cur_Sna)
+
